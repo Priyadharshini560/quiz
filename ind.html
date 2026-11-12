@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Quiz App</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eaf2f8;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .container {
+            background: white;
+            width: 450px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px #aaa;
+        }
+
+        h2 {
+            color: #2c3e50;
+        }
+
+        .question {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #217dbb;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        #feedback {
+            font-weight: bold;
+            margin: 15px;
+        }
+
+        #nextBtn {
+            background: #27ae60;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Simple Quiz</h2>
+
+    <p id="questionNumber"></p>
+
+    <h3 id="question" class="question"></h3>
+
+    <div id="answers"></div>
+
+    <p id="feedback"></p>
+
+    <button id="nextBtn" onclick="nextQuestion()" hidden>
+        Next Question
+    </button>
+
+    <h3 id="result"></h3>
+
+</div>
+
+<script>
+
+const questions = [
+    {
+        question: "1. Which language is used for web development?",
+        answers: ["HTML", "C", "Python", "Java"],
+        correct: "HTML"
+    },
+    {
+        question: "2. What does CSS stand for?",
+        answers: [
+            "Computer Style Sheet",
+            "Cascading Style Sheets",
+            "Creative Style System",
+            "Colorful Style Sheet"
+        ],
+        correct: "Cascading Style Sheets"
+    },
+    {
+        question: "3. Which keyword is used to declare a variable in JavaScript?",
+        answers: ["int", "string", "let", "float"],
+        correct: "let"
+    }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+function showQuestion() {
+
+    answered = false;
+
+    document.getElementById("questionNumber").textContent =
+        "Question " + (currentQuestion + 1) + " of 3";
+
+    document.getElementById("question").textContent =
+        questions[currentQuestion].question;
+
+    document.getElementById("feedback").textContent = "";
+
+    document.getElementById("nextBtn").hidden = true;
+
+    let answersDiv = document.getElementById("answers");
+    answersDiv.innerHTML = "";
+
+    questions[currentQuestion].answers.forEach(function(answer) {
+
+        let button = document.createElement("button");
+
+        button.textContent = answer;
+
+        button.onclick = function() {
+            checkAnswer(answer, button);
+        };
+
+        answersDiv.appendChild(button);
+
+    });
+}
+
+function checkAnswer(answer, selectedButton) {
+
+    if (answered) {
+        return;
+    }
+
+    answered = true;
+
+    let correctAnswer = questions[currentQuestion].correct;
+
+    if (answer === correctAnswer) {
+
+        score++;
+
+        document.getElementById("feedback").textContent =
+            "Correct Answer!";
+
+        document.getElementById("feedback").style.color = "green";
+
+    } else {
+
+        document.getElementById("feedback").textContent =
+            "Incorrect! Correct answer: " + correctAnswer;
+
+        document.getElementById("feedback").style.color = "red";
+
+    }
+
+    let buttons = document.querySelectorAll("#answers button");
+
+    buttons.forEach(function(button) {
+        button.disabled = true;
+    });
+
+    if (currentQuestion < questions.length - 1) {
+
+        document.getElementById("nextBtn").hidden = false;
+
+    } else {
+
+        document.getElementById("nextBtn").hidden = true;
+
+        document.getElementById("result").textContent =
+            "Your Final Score: " + score + " / 3";
+
+    }
+}
+
+function nextQuestion() {
+
+    if (currentQuestion < questions.length - 1) {
+
+        currentQuestion++;
+
+        showQuestion();
+
+    }
+
+}
+
+showQuestion();
+
+</script>
+
+</body>
+</html>
